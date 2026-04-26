@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.hypothesis/
+.pytest_cache/
+cover/
+htmlcov/
+.ipynb_checkpoints
+.mypy_cache/
+.dmypy.json
+.pyre/
+.ruff_cache/
+
+# Flask specific
+instance/
+.flaskenv
+
+node_modules/
+
+# IDEs
+.idea/                  # JetBrains IDEs (PyCharm, IntelliJ)
+.vscode/                # VS Code
+*.sublime-project       # Sublime Text
+*.sublime-workspace
+.DS_Store               # macOS specific
+Thumbs.db               # Windows specific
+
+# Uploaded files (if you don't want them in Git)
+static/uploads/books/   # If you want to keep uploaded books out of version control
+static/uploads/covers/  # If you want to keep uploaded covers out of version control
+
+# Database files (if using SQLite or similar file-based DB)
+*.db
+*.sqlite
+*.sqlite3
+
+# Your specific data files
+database.json
+comments.json
