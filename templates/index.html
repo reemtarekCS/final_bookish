@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Bookish</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Welcome to Bookish</h1>
+    <p>Please enter your name to enter the library:</p>
+    
+    <input type="text" id="username" placeholder="Your Name" onkeydown="if(event.key === 'Enter') saveUser()">
+    <button onclick="saveUser()">Enter Library</button>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
