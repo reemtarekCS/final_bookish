@@ -40,4 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('input', applyFilters);
         genreFilter?.addEventListener('change', applyFilters);
     }
+
+    //a check to assign the uploaded file to the user
+    const currentUser = localStorage.getItem('bookish_user');
+    const uploaderField = document.getElementById('uploader-hidden');
+    if (uploaderField) {
+        if (!currentUser) {
+            alert("You must enter a name before uploading!");
+            window.location.href = "/";
+        } else {
+            uploaderField.value = currentUser;
+        }
+    }
 });

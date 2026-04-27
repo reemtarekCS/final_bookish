@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload New Book</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Upload an EPUB File</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="file">Select EPUB:</label>
+            <input type="file" name="file" id="file" accept=".epub" required>
+        </div>
+        <input type="hidden" name="uploader" id="uploader-hidden">
+        <br>
+        <button type="submit">Upload and Process</button>
+    </form>
+    
+    <br>
+    <a href="/library">Back to Library</a>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
