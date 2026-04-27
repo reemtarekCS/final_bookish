@@ -160,3 +160,22 @@ def upload():
             return redirect(url_for('library'))
             
     return render_template('upload.html')
+
+#route that handles new comments
+@app.route('/add_comment/<int:book_id>', methods=['POST'])
+def add_comment(book_id):
+    comment_text = request.form.get('comment')
+    user_name = request.form.get('user') or "Anonymous"
+
+    if comment_text:
+        all_comments = read_comments()
+        all_comments.append({
+            "book_id": book_id,
+            "user": user_name,
+            "text": comment_text,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        write_comments(all_comments)
+
+    return redirect(url_for('book_detail', book_id=book_id))
+

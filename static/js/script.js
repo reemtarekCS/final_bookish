@@ -52,4 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
             uploaderField.value = currentUser;
         }
     }
+    // book_detail page autofill hidden username for comments
+    const hiddenUserField = document.getElementById('comment-user-hidden');
+    if (hiddenUserField) {
+        hiddenUserField.value = localStorage.getItem('bookish_user') || 'Anonymous';
+    }
 });
