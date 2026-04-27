@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> | 
+        <a href="/upload">Upload Book</a> |
+        <a href="#" id="profile-link">My Profile</a>
+    </nav>
+
+    <h1>Book Collection</h1>
+
+    <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search by title or author..." class="search-bar">
+        <select id="genreFilter" class="search-bar">
+            <option value="">All Genres</option>
+            {% for genre in genres %}
+                <option value="{{ genre }}">{{ genre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div id="book-list">
+        {% for book in books %}
+            <div class="book-entry" data-genre="{{ book.genre }}">
+                <div class="book-item">
+                    <h3>{{ book.title }}</h3>
+                    <p>By: {{ book.author }}</p>
+                    <p>Genre: {{ book.genre }}</p>
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}">View Details</a>
+                </div>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
