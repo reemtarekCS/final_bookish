@@ -179,3 +179,16 @@ def add_comment(book_id):
 
     return redirect(url_for('book_detail', book_id=book_id))
 
+# method to view the e-reader for a specific book.
+@app.route('/read/<int:book_id>')
+def read_book(book_id):
+    data = read_db()
+    book = next((b for b in data['books'] if b['id'] == book_id), None)
+    if not book:
+        return "Book not found", 404
+    return render_template('reader.html', book=book)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+    

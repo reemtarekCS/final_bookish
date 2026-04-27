@@ -57,4 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hiddenUserField) {
         hiddenUserField.value = localStorage.getItem('bookish_user') || 'Anonymous';
     }
+
+    // reader.html logic, Epub.js initialization and controls
+    const readerArea = document.getElementById('area');
+    if (readerArea && readerArea.dataset.bookPath) {
+        try {
+            // Use the full origin to ensure the path is absolute
+            const book = ePub(window.location.origin + readerArea.dataset.bookPath);
+            const rendition = book.renderTo("area", { flow: "paginated", width: "900", height: "600" });
+            rendition.display().catch(err => console.error("Error displaying book:", err));
+
+            document.getElementById("prevButton")?.addEventListener("click", () => rendition.prev());
+            document.getElementById("nextButton")?.addEventListener("click", () => rendition.next());
+        } catch (e) {
+            console.error("Reader failed to initialize:", e);
+        }
+    }
 });
