@@ -188,6 +188,48 @@ def read_book(book_id):
         return "Book not found", 404
     return render_template('reader.html', book=book)
 
+# route to view user specific uploads and comments
+@app.route('/profile/<username>')
+def profile(username):
+    db = read_db()
+    all_comments = read_comments()
+    
+    # Create a dictionary to quickly look up book titles by their ID
+    book_titles = {b['id']: b['title'] for b in db.get('books', [])}
+
+    # Filter data based on the username
+    user_books = [b for b in db.get('books', []) if b.get('uploader') == username]
+    user_comments = [c for c in all_comments if c.get('user') == username]
+    
+    # Attach the corresponding book title to each filtered comment
+    for comment in user_comments:
+        comment['book_title'] = book_titles.get(comment.get('book_id'), "Unknown Book")
+
+    return render_template('profile.html', username=username, books=user_books, comments=user_comments)
+
+
+@app.route('/delete_book/<int:book_id>', methods=['POST'])
+def delete_book(book_id):
+    db = read_db()
+    books = db.get('books', [])
+    book = next((b for b in books if b['id'] == book_id), None)
+
+    if book:
+        # remove the physical EPUB file from the uploads folder
+        if os.path.exists(book['path']):
+            os.remove(book['path'])
+
+        # remove the book entry from database.json
+        db['books'] = [b for b in books if b['id'] != book_id]
+        write_db(db)
+
+        # clean up comments associated with the deleted book
+        all_comments = read_comments()
+        updated_comments = [c for c in all_comments if c.get('book_id') != book_id]
+        write_comments(updated_comments)
+
+    return redirect(request.referrer or url_for('library'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

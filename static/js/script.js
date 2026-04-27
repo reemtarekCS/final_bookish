@@ -73,4 +73,21 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Reader failed to initialize:", e);
         }
     }
+
+    // profile link logic
+    const profileLink = document.getElementById('profile-link');
+    const currentUser = localStorage.getItem('bookish_user');
+    if (profileLink && currentUser) {
+        profileLink.href = `/profile/${currentUser}`;
+    }
+
+    // logout logic
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('bookish_user');
+            window.location.href = "/";
+        });
+    }
+
 });
