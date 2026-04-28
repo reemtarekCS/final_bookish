@@ -179,6 +179,22 @@ def add_comment(book_id):
 
     return redirect(url_for('book_detail', book_id=book_id))
 
+#route for viewing specific book details and comments
+@app.route('/book/<int:book_id>')
+def book_detail(book_id):
+    db = read_db()
+    book = next((b for b in db['books'] if b['id'] == book_id), None)
+    
+    if not book:
+        return redirect(url_for('library'))
+
+    all_comments = read_comments()
+    # Filter comments belonging to this book
+    book_comments = [c for c in all_comments if c.get('book_id') == book_id]
+    
+    return render_template('book_detail.html', book=book, book_comments=book_comments)
+
+
 # method to view the e-reader for a specific book.
 @app.route('/read/<int:book_id>')
 def read_book(book_id):

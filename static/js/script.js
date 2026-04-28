@@ -76,9 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // profile link logic
     const profileLink = document.getElementById('profile-link');
-    const currentUser = localStorage.getItem('bookish_user');
-    if (profileLink && currentUser) {
-        profileLink.href = `/profile/${currentUser}`;
+    if (profileLink && localStorage.getItem('bookish_user')) {
+        const user = localStorage.getItem('bookish_user');
+        profileLink.href = `/profile/${user}`;
     }
 
     // logout logic
