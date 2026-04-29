@@ -3,22 +3,44 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Reading: {{ book.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }} — Bookish</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
-<body class="reader-body">
-    <nav>
-        <a href="/library">Back to Library</a> | Reading: {{ book.title }}
-    </nav>
+<body style="overflow:hidden;">
 
-    <div id="area" data-book-path="/{{ book.path.replace('\\', '/') }}"></div>
+    <div class="reader-top-bar">
+        <div class="reader-top-left">
+            <button class="toc-toggle" id="tocToggle" onclick="toggleToc()">Contents</button>
+            <span class="chapter-title" id="chapterTitle">{{ book.title }}</span>
+        </div>
+        <a href="/library" class="btn-outline">Close</a>
+    </div>
 
-    <div class="controls">
-        <button id="prevButton">Previous</button>
-        <button id="nextButton">Next</button>
+    <!-- ----------------table of contents------------- -->
+    <div class="toc-panel" id="tocPanel">
+        <h3>Contents</h3>
+        <div id="chapterList"></div>
+    </div>
+
+    <!-- ----------------main reader------------- -->
+    <div id="area" data-book-path="/{{ book.path.replace('\\', '/') }}">
+        <div class="loading" id="loadingMsg">Opening book…</div>
+    </div>
+
+    <div class="progress-bar">
+        <div id="progress"></div>
+    </div>
+
+    <!-- ----------------floating controls------------ -->
+
+    <div class="reader-bottom-nav">
+        <button id="prevChapter" class="nav-btn" disabled>← Previous</button>
+        <span class="chapter-indicator" id="chapterIndicator"></span>
+        <button id="nextChapter" class="nav-btn" disabled>Next →</button>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
