@@ -92,5 +92,48 @@ document.addEventListener('DOMContentLoaded', () => {
         genreFilter?.addEventListener('change', applyFilters);
     }
 
+    /* --- 6- profile page link- set correct href --- */
+    const profileLink = document.getElementById('profile-link');
+    if (profileLink && currentUser) {
+        profileLink.href = `/profile/${currentUser}`;
+    }
+
+    /* --- 7- logout button --- */
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('bookish_user');
+            window.location.href = '/';
+        });
+    }
+    /* --- 8- upload page -  auth guard + fill hidden uploader field --- */
+    const uploaderField = document.getElementById('uploader-hidden');
+    if (uploaderField) {
+        if (!currentUser) {
+            alert('You must enter a name before uploading!');
+            window.location.href = '/';
+        } else {
+            uploaderField.value = currentUser;
+        }
+    }
 
 });
+/* --- 9- library page -  sidebar toggle--- */
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+/* --- 10- reader page -  TOC toggle--- */
+
+function toggleToc() {
+    const panel = document.getElementById('tocPanel');
+    const area  = document.getElementById('area');
+    const btn   = document.getElementById('tocToggle');
+
+    if (!panel) return;
+
+    const isOpen = panel.classList.toggle('open');
+    area?.classList.toggle('toc-open', isOpen);
+    btn?.classList.toggle('active', isOpen);
+}
+
