@@ -117,6 +117,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /* --- 11- fading the flash messages --- */
+
+    document.querySelectorAll('.flash-message').forEach(msg => {
+        setTimeout(() => {
+            msg.style.transition = 'opacity 0.4s';
+            msg.style.opacity = '0';
+            setTimeout(() => msg.remove(), 400);
+        }, 4000);
+    });
+
 });
 /* --- 9- library page -  sidebar toggle--- */
 function toggleSidebar() {
@@ -127,8 +137,8 @@ function toggleSidebar() {
 
 function toggleToc() {
     const panel = document.getElementById('tocPanel');
-    const area  = document.getElementById('area');
-    const btn   = document.getElementById('tocToggle');
+    const area = document.getElementById('area');
+    const btn = document.getElementById('tocToggle');
 
     if (!panel) return;
 
@@ -137,3 +147,98 @@ function toggleToc() {
     btn?.classList.toggle('active', isOpen);
 }
 
+/* --- 12- reader page -  epub.js initialisation, runs only on pages that have #area with data-book-path.--- */
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const readerArea = document.getElementById('area');
+    if (!readerArea || !readerArea.dataset.bookPath) return;
+
+    // epub.js must already be loaded via <script> in reader.html
+    if (typeof ePub === 'undefined') {
+        console.error('epub.js not loaded');
+        return;
+    }
+
+    const book = ePub(window.location.origin + readerArea.dataset.bookPath);
+
+    const rendition = book.renderTo('area', {
+        flow: 'scrolled-doc',
+        width: '100%',
+        height: '100%',
+        spread: 'none'
+    });
+
+    rendition.display();
+
+    let toc = [];
+    let currentIndex = 0;
+
+    function setActive(index) {
+        document.querySelectorAll('#chapterList a').forEach((l, i) => {
+            l.classList.toggle('active', i === index);
+        });
+        const active = document.querySelector('#chapterList a.active');
+        if (active) active.scrollIntoView({ block: 'nearest' });
+    }
+
+    function updateTitle() {
+        const title = toc[currentIndex]?.label?.trim() || 'Reading';
+        const el = document.getElementById('chapterTitle');
+        if (el) el.textContent = title;
+    }
+
+    function updateNavButtons() {
+        const prev = document.getElementById('prevChapter');
+        const next = document.getElementById('nextChapter');
+        const indicator = document.getElementById('chapterIndicator');
+        if (prev) prev.disabled = currentIndex <= 0;
+        if (next) next.disabled = currentIndex >= toc.length - 1;
+        if (indicator) indicator.textContent = toc.length ? `${currentIndex + 1} / ${toc.length}` : '';
+    }
+
+    function goToChapter(index) {
+        currentIndex = index;
+        rendition.display(toc[currentIndex].href);
+        updateTitle();
+        setActive(currentIndex);
+        updateNavButtons();
+        readerArea.scrollTop = 0;
+    }
+
+    book.ready.then(() => {
+        const loadingMsg = document.getElementById('loadingMsg');
+        if (loadingMsg) loadingMsg.remove();
+
+        toc = book.navigation.toc || [];
+        const list = document.getElementById('chapterList');
+        if (!list) return;
+
+        list.innerHTML = '';
+        toc.forEach((chapter, index) => {
+            const link = document.createElement('a');
+            link.textContent = chapter.label?.trim() || `Chapter ${index + 1}`;
+            link.href = '#';
+            link.onclick = (e) => {
+                e.preventDefault();
+                goToChapter(index);
+                if (window.innerWidth < 700) toggleToc();
+            };
+            list.appendChild(link);
+        });
+
+        updateTitle();
+        setActive(0);
+        updateNavButtons();
+    });
+
+    document.getElementById('prevChapter')?.addEventListener('click', () => {
+        if (currentIndex > 0) goToChapter(currentIndex - 1);
+    });
+
+    document.getElementById('nextChapter')?.addEventListener('click', () => {
+        if (currentIndex < toc.length - 1) goToChapter(currentIndex + 1);
+    });
+
+});
