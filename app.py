@@ -1,29 +1,37 @@
 import os
 import json
 import ebooklib
+import requests
 from ebooklib import epub
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = "secret_key_for_session" # Required for flash messages
+app.secret_key = "secret_key_for_session" 
 
 UPLOAD_FOLDER = 'static/uploads/books'
-ALLOWED_EXTENSIONS = {'epub'}
+COVER_FOLDER = 'static/uploads/covers'
+DATABASE_FILE = 'database.json'
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+# ── Book class ────
+
+# the book class it represents a single book stored in the library.
 class Book:
-    def __init__(self, book_id, title, author, genre, file_path, uploader):
+    def __init__(self, book_id, title, author, genre, file_path, uploader, cover_path=None):
         self.id = book_id
         self.title = title
         self.author = author
         self.genre = genre
         self.file_path = file_path
+        self.cover_path = cover_path
         self.uploader = uploader
         self.created_at = datetime.now()
 
-    #this method converts the object to a dictionary to store in database.json
+# converts the Book object to a dictionary for json storage
     def to_dict(self):
         return {
             "id": self.id,
@@ -31,171 +39,255 @@ class Book:
             "author": self.author,
             "genre": self.genre,
             "path": self.file_path,
+            "cover_path": self.cover_path,
             "uploader": self.uploader,
             "timestamp": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         }
+
+# returns a formatted string of title and author
     def book_by(self):
         return f"{self.title} by {self.author}"
 
-#read and write functions for books
-database_books = 'database.json'
-database_comments = 'comments.json'
 
+# ── Database helpers ────
+
+# reads the json database file and returns its contents
 def read_db():
-    if not os.path.exists(database_books):
+    if not os.path.exists(DATABASE_FILE):
         return {"books": []}
-    with open(database_books, 'r') as f:
+    with open(DATABASE_FILE, 'r') as f:
         try:
             return json.load(f)
         except json.JSONDecodeError:
             return {"books": []}
 
+# writes data to json files
 def write_db(data):
-    with open(database_books, 'w') as f:
+    with open(DATABASE_FILE, 'w') as f:
         json.dump(data, f, indent=4)
 
 
-#read and write functions for comments
-def read_comments():
-    if not os.path.exists(database_comments):
-        return []
-    with open(database_comments, 'r') as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError:
-            return []
+# ── EPUB helpers ────────────
 
-def write_comments(data):
-    with open(database_comments, 'w') as f:
-        json.dump(data, f, indent=4)
-
-
-#this method extracts title, author, and genre from the epub files using ebooklib
+# extracts title, author, and genre from an EPUB file's Dublin Core metadata
 def get_epub_metadata(filepath):
     try:
         book = epub.read_epub(filepath)
-        
+
         titles = book.get_metadata('DC', 'title')
         title = titles[0][0] if titles else None
-        
+
         authors = book.get_metadata('DC', 'creator')
         author = authors[0][0] if authors else None
-        
+
         subjects = book.get_metadata('DC', 'subject')
         genre = subjects[0][0] if subjects else None
-        
+
         return title, author, genre
     except Exception as e:
-        print(f"Error extracting EPUB metadata with ebooklib: {e}")
+        print(f"Error reading EPUB metadata: {e}")
         return None, None, None
 
-# ---------------------------------------------------------------
+
+  
+    # Attempts to extract a cover image from an EPUB file using three methods:
+    # 1. Official OPF cover metadata
+    # 2. Any image item with 'cover' in its name
+    # 3. The first image found as a fallback
+    # Returns the relative path for use in templates, or None if no cover found.
+    
+
+def extract_and_save_cover(epub_file_path, book_id):
+
+    try:
+        book = epub.read_epub(epub_file_path)
+        cover_item = None
+
+        # Method 1: OPF cover metadata tag
+        covers = book.get_metadata('OPF', 'cover')
+        if covers:
+            cover_id = covers[0][1].get('content')
+            cover_item = book.get_item_with_id(cover_id)
+
+        # Method 2: image file with cover in the name
+        if not cover_item:
+            for item in book.get_items():
+                if item.get_type() == ebooklib.ITEM_IMAGE:
+                    if 'cover' in item.get_name().lower():
+                        cover_item = item
+                        break
+
+        # Method 3: first available image as a last resort
+        if not cover_item:
+            for item in book.get_items():
+                if item.get_type() == ebooklib.ITEM_IMAGE:
+                    cover_item = item
+                    break
+
+        if cover_item:
+            ext = cover_item.get_name().split('.')[-1]
+            filename = f"cover_{book_id}.{ext}"
+            os.makedirs(COVER_FOLDER, exist_ok=True)
+            full_path = os.path.join(COVER_FOLDER, filename)
+
+            with open(full_path, 'wb') as f:
+                f.write(cover_item.get_content())
+
+            # return path relative to static/ 
+            return full_path.replace('\\', '/').split('static/')[-1]
+
+        return None
+
+    except Exception as e:
+        print(f"Cover extraction error: {e}")
+        return None
 
 
+    # Falls back to the Open Library API to find a cover image URL
+    # when no cover can be extracted from the EPUB itself.
+    # Returns a full image URL string, or None if not found.
+    
+def fetch_openlibrary_cover(title, author):
+    try:
+        query = f"{title} {author}"
+        res = requests.get(
+            f"https://openlibrary.org/search.json?q={query}",
+            timeout=5
+        ).json()
+
+        if res.get("docs"):
+            cover_id = res["docs"][0].get("cover_i")
+            if cover_id:
+                return f"https://covers.openlibrary.org/b/id/{cover_id}-L.jpg"
+
+        return None
+
+    except Exception as e:
+        print(f"Open Library API error: {e}")
+        return None
+
+
+# ── Routes ─────────
+
+
+# login page
 @app.route('/')
 def welcome():
     return render_template('index.html')
+
+
+# library page
 
 @app.route('/library')
 def library():
     data = read_db()
     books = data.get('books', [])
-    # Get a unique list of genres for the filter dropdown
     genres = sorted(list(set(book['genre'] for book in books if book.get('genre'))))
     return render_template('library.html', books=books, genres=genres)
 
 
-#the form in upload takes two parts because it's enctype is multipart/form-data 
-#which takes text data as form.get and binary data aka the files as request.files
+
+# GET renders the upload form. and POST Accepts a multipart form with an EPUB file, extracts metadata,
+# checks for duplicates, saves the file and cover, then updates the json file
+    
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
+
     if request.method == 'POST':
         try:
             file = request.files.get('file')
             uploader = request.form.get('uploader') or "Anonymous"
 
-            # check if they file is a file or not empty, if so refresh.
             if not file or file.filename == '':
                 return redirect(request.url)
 
             if file and file.filename.endswith('.epub'):
-                # check for duplicates before adding to database
                 db_data = read_db()
                 books = db_data.get('books', [])
                 next_id = max([b['id'] for b in books], default=0) + 1
-                
-                # add id to filename to prevent overwriting files with same name
+
                 filename = f"{next_id}_{secure_filename(file.filename)}"
                 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                
-                # convert backslashes to forward slashes to fix the paths
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename).replace('\\', '/')
                 file.save(file_path)
 
-                # we get extracted data from metadata and add fallback
                 extracted_title, extracted_author, extracted_genre = get_epub_metadata(file_path)
-                title = extracted_title or "Unknown Title" 
-                author = extracted_author or "Unknown Author" 
-                genre = extracted_genre or "General" 
+                title = extracted_title or "Unknown Title"
+                author = extracted_author or "Unknown Author"
+                genre = extracted_genre or "General"
 
-                #check for duplicates before adding to db
-                is_duplicate = any(b['title'].lower() == title.lower() and 
-                                   b['author'].lower() == author.lower() for b in books)
-                
-                #deletes the file
+                # prevent duplicate books, same title + author, case-insensitive
+                is_duplicate = any(
+                    b['title'].lower() == title.lower() and
+                    b['author'].lower() == author.lower()
+                    for b in books
+                )
+
                 if is_duplicate:
                     os.remove(file_path)
                     flash(f"'{title}' by {author} is already in your library!")
                     return redirect(url_for('library'))
-                
-                new_book = Book(next_id, title, author, genre, file_path, uploader)
+
+                # try to get a cover from the epub first, then Open Library API
+                cover_path = extract_and_save_cover(file_path, next_id)
+                if not cover_path:
+                    cover_path = fetch_openlibrary_cover(title, author)
+
+                new_book = Book(next_id, title, author, genre, file_path, uploader, cover_path)
                 books.append(new_book.to_dict())
-                
-                write_db({"books": books})
-                flash(f"Successfully uploaded {title}!")
+                db_data['books'] = books
+                write_db(db_data)
+
+                flash(f"Successfully uploaded '{title}'!")
                 return redirect(url_for('library'))
-            
+
         except Exception as e:
             flash(f"An error occurred during upload: {str(e)}")
             return redirect(url_for('library'))
-            
+
     return render_template('upload.html')
 
-#route that handles new comments
-@app.route('/add_comment/<int:book_id>', methods=['POST'])
-def add_comment(book_id):
-    comment_text = request.form.get('comment')
-    user_name = request.form.get('user') or "Anonymous"
 
-    if comment_text:
-        all_comments = read_comments()
-        all_comments.append({
-            "book_id": book_id,
-            "user": user_name,
-            "text": comment_text,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        })
-        write_comments(all_comments)
+# deletes a book, removes the EPUB file, the local cover image and the entry from the database
+@app.route('/delete_book/<int:book_id>', methods=['POST'])
+def delete_book(book_id):
 
-    return redirect(url_for('book_detail', book_id=book_id))
-
-#route for viewing specific book details and comments
-@app.route('/book/<int:book_id>')
-def book_detail(book_id):
     db = read_db()
-    book = next((b for b in db['books'] if b['id'] == book_id), None)
-    
-    if not book:
-        return redirect(url_for('library'))
+    books = db.get('books', [])
+    book = next((b for b in books if b['id'] == book_id), None)
 
-    all_comments = read_comments()
-    # Filter comments belonging to this book
-    book_comments = [c for c in all_comments if c.get('book_id') == book_id]
-    
-    return render_template('book_detail.html', book=book, book_comments=book_comments)
+    if book:
+        try:
+            if os.path.exists(book['path']):
+                os.remove(book['path'])
+
+            # only delete cover files stored locally, not external URLs
+            if book.get('cover_path') and not book['cover_path'].startswith('http'):
+                cover_full_path = os.path.join('static', book['cover_path'])
+                if os.path.exists(cover_full_path):
+                    os.remove(cover_full_path)
+
+            db['books'] = [b for b in books if b['id'] != book_id]
+            write_db(db)
+            flash(f"Successfully deleted '{book['title']}'.")
+
+        except Exception as e:
+            flash(f"Error during deletion: {str(e)}")
+    else:
+        flash("Book not found.")
+
+    return redirect(request.referrer or url_for('library'))
 
 
-# method to view the e-reader for a specific book.
+# renders the profile page showing all books uploaded by a given user
+@app.route('/profile/<username>')
+def profile(username):
+    db = read_db()
+    user_books = [b for b in db.get('books', []) if b.get('uploader') == username]
+    return render_template('profile.html', username=username, books=user_books)
+
+
+# renders the Ereader page for a certain book
 @app.route('/read/<int:book_id>')
 def read_book(book_id):
     data = read_db()
@@ -204,49 +296,6 @@ def read_book(book_id):
         return "Book not found", 404
     return render_template('reader.html', book=book)
 
-# route to view user specific uploads and comments
-@app.route('/profile/<username>')
-def profile(username):
-    db = read_db()
-    all_comments = read_comments()
-    
-    # Create a dictionary to quickly look up book titles by their ID
-    book_titles = {b['id']: b['title'] for b in db.get('books', [])}
-
-    # Filter data based on the username
-    user_books = [b for b in db.get('books', []) if b.get('uploader') == username]
-    user_comments = [c for c in all_comments if c.get('user') == username]
-    
-    # Attach the corresponding book title to each filtered comment
-    for comment in user_comments:
-        comment['book_title'] = book_titles.get(comment.get('book_id'), "Unknown Book")
-
-    return render_template('profile.html', username=username, books=user_books, comments=user_comments)
-
-
-@app.route('/delete_book/<int:book_id>', methods=['POST'])
-def delete_book(book_id):
-    db = read_db()
-    books = db.get('books', [])
-    book = next((b for b in books if b['id'] == book_id), None)
-
-    if book:
-        # remove the physical EPUB file from the uploads folder
-        if os.path.exists(book['path']):
-            os.remove(book['path'])
-
-        # remove the book entry from database.json
-        db['books'] = [b for b in books if b['id'] != book_id]
-        write_db(db)
-
-        # clean up comments associated with the deleted book
-        all_comments = read_comments()
-        updated_comments = [c for c in all_comments if c.get('book_id') != book_id]
-        write_comments(updated_comments)
-
-    return redirect(request.referrer or url_for('library'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
