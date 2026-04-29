@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Upload New Book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload — Bookish</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <h1>Upload an EPUB File</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <div>
-            <label for="file">Select EPUB:</label>
-            <input type="file" name="file" id="file" accept=".epub" required>
-        </div>
-        <input type="hidden" name="uploader" id="uploader-hidden">
-        <br>
-        <button type="submit">Upload and Process</button>
-    </form>
-    
-    <br>
-    <a href="/library">Back to Library</a>
+
+<body class="page-centered">
+
+    <div class="upload-card">
+        <h2>Upload a Book</h2>
+        <p class="tagline">epub files only</p>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input class="file-input" type="file" name="file" accept=".epub" required>
+            <input type="hidden" name="uploader" id="uploader-hidden">
+            <button class="btn-primary" type="submit">Add to Library</button>
+        </form>
+
+        <a href="/library" class="back-link">← back to library</a>
+    </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
+
 </html>
