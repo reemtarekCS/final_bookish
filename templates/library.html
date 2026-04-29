@@ -1,44 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Your Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library — Bookish</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <nav>
-        <a href="/">Home</a> | 
-        <a href="/upload">Upload Book</a> |
-        <a href="#" id="profile-link">My Profile</a>
-    </nav>
 
-    <h1>Book Collection</h1>
+<body class="library-layout">
+    <!-- ----------------side bar-------------------- -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="sidebar-logo">Bookish</div>
 
-    <div class="filters">
-        <input type="text" id="searchInput" placeholder="Search by title or author..." class="search-bar">
-        <select id="genreFilter" class="search-bar">
-            <option value="">All Genres</option>
-            {% for genre in genres %}
-                <option value="{{ genre }}">{{ genre }}</option>
-            {% endfor %}
-        </select>
+        <nav class="nav-items">
+            <a href="/library" class="nav-icon-btn">
+                <svg class="nav-svg" viewBox="0 0 24 24">
+                    <path
+                        d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+                </svg>
+                <span class="nav-label">Library</span>
+            </a>
+            <a href="/upload" class="nav-icon-btn">
+                <svg class="nav-svg" viewBox="0 0 24 24">
+                    <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" />
+                </svg>
+                <span class="nav-label">Upload</span>
+            </a>
+            <a href="#" id="profile-link" class="nav-icon-btn">
+                <svg class="nav-svg" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                </svg>
+                <span class="nav-label">Profile</span>
+            </a>
+            <button id="logoutBtn" class="nav-icon-btn">
+                <svg class="nav-svg" viewBox="0 0 24 24">
+                    <path
+                        d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                </svg>
+                <span class="nav-label">Logout</span>
+            </button>
+        </nav>
     </div>
 
-    <div id="book-list">
-        {% for book in books %}
-            <div class="book-entry" data-genre="{{ book.genre }}">
-                <div class="book-item">
-                    <h3>{{ book.title }}</h3>
-                    <p>By: {{ book.author }}</p>
-                    <p>Genre: {{ book.genre }}</p>
-                    <a href="{{ url_for('book_detail', book_id=book.id) }}">View Details</a>
-                </div>
-                <hr>
+    <!-- -----------main library--------------- -->
+    <div class="library-main">
+        <div class="library-header">
+            <div>
+                <h1>My Library</h1>
+                <p class="greeting" id="welcomeUser"></p>
             </div>
+            <div class="search-row">
+                <input type="text" id="searchInput" placeholder="Search books..." class="search-bar">
+                <select id="genreFilter" class="search-bar">
+                    <option value="">All genres</option>
+                    {% for genre in genres %}
+                    <option value="{{ genre }}">{{ genre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="grid" id="book-list">
+            {% for book in books %}
+            <a href="/read/{{ book.id }}" class="book-link">
+                <div class="book" data-genre="{{ book.genre }}">
+                    {% if book.cover_path %}
+                    {% if book.cover_path.startswith('http') %}
+                    <img src="{{ book.cover_path }}" alt="{{ book.title }}">
+                    {% else %}
+                    <img src="{{ url_for('static', filename=book.cover_path) }}" alt="{{ book.title }}">
+                    {% endif %}
+                    {% else %}
+                    <div class="no-cover">no cover</div>
+                    {% endif %}
+                    <div class="book-info">
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.author }}</p>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div class="empty-state" style="grid-column: 1/-1;">
+                Your library is empty — <a href="/upload">upload your first book</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
         {% endfor %}
     </div>
+    {% endif %}
+    {% endwith %}
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
 </body>
+
 </html>
