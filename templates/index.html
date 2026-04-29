@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to Bookish</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookish</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <h1>Welcome to Bookish</h1>
-    <p>Please enter your name to enter the library:</p>
-    
-    <input type="text" id="username" placeholder="Your Name" onkeydown="if(event.key === 'Enter') saveUser()">
-    <button onclick="saveUser()">Enter Library</button>
+
+<body class="page-centered">
+
+    <div class="login-card">
+        <h1>Bookish</h1>
+        <p class="tagline">your personal library</p>
+
+        <input class="input" type="text" id="username" placeholder="What should we call you?"
+            onkeydown="if(event.key === 'Enter') saveUser()">
+
+        <button class="btn-primary" onclick="saveUser()">Enter Library</button>
+    </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
+
 </html>
