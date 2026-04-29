@@ -85,7 +85,7 @@ def get_epub_metadata(filepath):
 
         return title, author, genre
     except Exception as e:
-        print(f"Error reading EPUB metadata: {e}")
+        app.logger.error(f"Error reading EPUB metadata: {e}")
         return None, None, None
 
 
@@ -139,7 +139,7 @@ def extract_and_save_cover(epub_file_path, book_id):
         return None
 
     except Exception as e:
-        print(f"Cover extraction error: {e}")
+        app.logger.error(f"Cover extraction error: {e}")
         return None
 
 
@@ -163,7 +163,7 @@ def fetch_openlibrary_cover(title, author):
         return None
 
     except Exception as e:
-        print(f"Open Library API error: {e}")
+        app.logger.error(f"Open Library API error: {e}")
         return None
 
 
