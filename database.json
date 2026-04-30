@@ -1,0 +1,54 @@
+{
+    "books": [
+        {
+            "id": 2,
+            "title": "The Silence of the Lambs",
+            "author": "Thomas  Harris",
+            "genre": "thriller",
+            "path": "static/uploads/books/2_Thomas_Harris_-_The_silence_of_the_lambs.epub",
+            "cover_path": "uploads/covers/cover_2.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-29 18:35:12"
+        },
+        {
+            "id": 3,
+            "title": "This Is How You Lose the Time War",
+            "author": "Amal El-Mohtar",
+            "genre": "General",
+            "path": "static/uploads/books/3_This_Is_How_You_Lose_the_Time_War_Amal_El-Mohtar_Max_Gladstone.epub",
+            "cover_path": "uploads/covers/cover_3.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-29 18:35:21"
+        },
+        {
+            "id": 4,
+            "title": "Madonna in a Fur Coat",
+            "author": "Sabahattin Ali",
+            "genre": "General",
+            "path": "static/uploads/books/4_Ali_Sabahattin_-_Madonna_in_a_Fur_Coat.epub",
+            "cover_path": "uploads/covers/cover_4.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-29 18:35:29"
+        },
+        {
+            "id": 5,
+            "title": "2001 - A Space Odyssey",
+            "author": "Clarke, Arthur C.",
+            "genre": "General",
+            "path": "static/uploads/books/5_2001_A_Space_Odyssey_-_Arthur_C_Clarke.epub",
+            "cover_path": "uploads/covers/cover_5.jpeg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-29 18:47:46"
+        },
+        {
+            "id": 6,
+            "title": "The Remains of the Day",
+            "author": "Kazuo Ishiguro",
+            "genre": "General",
+            "path": "static/uploads/books/6_Ishiguro_Kazuo_-_The_Remains_of_the_Day.epub",
+            "cover_path": "uploads/covers/cover_6.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-29 18:48:00"
+        }
+    ]
+}
