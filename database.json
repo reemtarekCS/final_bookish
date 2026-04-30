@@ -49,6 +49,216 @@
             "cover_path": "uploads/covers/cover_6.jpg",
             "uploader": "Reem",
             "timestamp": "2026-04-29 18:48:00"
+        },
+        {
+            "id": 7,
+            "title": "Killing Commendatore",
+            "author": "Haruki Murakami",
+            "genre": "General",
+            "path": "static/uploads/books/7_Killing_Commendatore_Haruki_Murakami__Z-Library.epub",
+            "cover_path": "uploads/covers/cover_7.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:37:09"
+        },
+        {
+            "id": 8,
+            "title": "Colorless Tsukuru Tazaki and his Years of Pilgrimage",
+            "author": "Haruki Murakami",
+            "genre": "General",
+            "path": "static/uploads/books/8_Colorless_Tsukuru_Tazaki_and_His_Years_of_Pilgrimage_Haruki_Murakami__Z-Library.epub",
+            "cover_path": "uploads/covers/cover_8.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:37:22"
+        },
+        {
+            "id": 9,
+            "title": "1Q84: Book 3",
+            "author": "Haruki Murakami",
+            "genre": "General",
+            "path": "static/uploads/books/9_1Q84_Book_3_Haruki_Murakami_Murakami_Haruki__Z-Library.epub",
+            "cover_path": "uploads/covers/cover_9.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:37:32"
+        },
+        {
+            "id": 10,
+            "title": "1Q84: Books 1 and 2",
+            "author": "Haruki MURAKAMI",
+            "genre": "recent",
+            "path": "static/uploads/books/10_1Q84_Books_1_and_2_Haruki_MURAKAMI_MURAKAMI_Haruki__Z-Library.epub",
+            "cover_path": "uploads/covers/cover_10.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:37:41"
+        },
+        {
+            "id": 11,
+            "title": "After Dark",
+            "author": "Haruki Murakami",
+            "genre": "Literary",
+            "path": "static/uploads/books/11_After_Dark_Haruki_Murakami_Murakami_Haruki__Z-Library.epub",
+            "cover_path": "uploads/covers/cover_11.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:37:50"
+        },
+        {
+            "id": 12,
+            "title": "Kafka on the Shore",
+            "author": "Haruki Murakami",
+            "genre": "Fiction",
+            "path": "static/uploads/books/12_Kafka_on_the_Shore_Haruki_Murakami_Murakami_Haruki__Z-Library.epub",
+            "cover_path": "uploads/covers/cover_12.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:38:01"
+        },
+        {
+            "id": 13,
+            "title": "Sputnik Sweetheart",
+            "author": "Haruki Murakami",
+            "genre": "Fiction",
+            "path": "static/uploads/books/13_Sputnik_Sweetheart_Haruki_Murakami_Murakami_Haruki__Z-Library.epub",
+            "cover_path": "uploads/covers/cover_13.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:38:24"
+        },
+        {
+            "id": 14,
+            "title": "The Wind-Up Bird Chronicle",
+            "author": "Haruki Murakami",
+            "genre": "Fiction:Literature",
+            "path": "static/uploads/books/14_The_Wind-Up_Bird_Chronicle___Z-Library.epub",
+            "cover_path": "uploads/covers/cover_14.jpeg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:38:35"
+        },
+        {
+            "id": 15,
+            "title": "Norwegian Wood",
+            "author": "Haruki Murakami",
+            "genre": "General",
+            "path": "static/uploads/books/15_norwegian_wood_-_haruki_murakami.epub",
+            "cover_path": "uploads/covers/cover_15.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:39:29"
+        },
+        {
+            "id": 16,
+            "title": "Night Shift",
+            "author": "Stephen King",
+            "genre": "Fiction",
+            "path": "static/uploads/books/16_Night_Shift_-_Stephen_King.epub",
+            "cover_path": "uploads/covers/cover_16.jpeg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:39:59"
+        },
+        {
+            "id": 17,
+            "title": "Pet Sematary",
+            "author": "Stephen King",
+            "genre": "General",
+            "path": "static/uploads/books/17_Pet_Sematary_-_Stephen_King.epub",
+            "cover_path": "uploads/covers/cover_17.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:40:06"
+        },
+        {
+            "id": 19,
+            "title": "Salem\u2019s Lot",
+            "author": "Stephen King",
+            "genre": "Horror",
+            "path": "static/uploads/books/19_Salem_39_s_Lot_-_Stephen_King.epub",
+            "cover_path": "uploads/covers/cover_19.jpeg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:40:22"
+        },
+        {
+            "id": 20,
+            "title": "The Shining",
+            "author": "Stephen King",
+            "genre": "General",
+            "path": "static/uploads/books/20_The_Shining_-_Stephen_King.epub",
+            "cover_path": "uploads/covers/cover_20.jpg",
+            "uploader": "Reem",
+            "timestamp": "2026-04-30 11:40:34"
+        },
+        {
+            "id": 21,
+            "title": "Crooked House",
+            "author": "Agatha Christie",
+            "genre": "General",
+            "path": "static/uploads/books/21_Agatha_Christie_-_Crooked_House.epub",
+            "cover_path": "uploads/covers/cover_21.jpeg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:25:07"
+        },
+        {
+            "id": 22,
+            "title": "Curtain: Poirot's Last Case",
+            "author": "Agatha Christie",
+            "genre": "General",
+            "path": "static/uploads/books/22_Agatha_Christie_-_Curtain_Poirot_39_s_Last_Case.epub",
+            "cover_path": "uploads/covers/cover_22.jpg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:25:15"
+        },
+        {
+            "id": 23,
+            "title": "Dead Man's Folly",
+            "author": "Agatha Christie",
+            "genre": "General",
+            "path": "static/uploads/books/23_Agatha_Christie_-_Dead_Man_39_s_Folly.epub",
+            "cover_path": "uploads/covers/cover_23.jpg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:25:24"
+        },
+        {
+            "id": 24,
+            "title": "Death Comes As the End",
+            "author": "Christie, Agatha",
+            "genre": "General",
+            "path": "static/uploads/books/24_Agatha_Christie_-_Death_Comes_As_The_End.epub",
+            "cover_path": "uploads/covers/cover_24.jpg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:25:34"
+        },
+        {
+            "id": 25,
+            "title": "Death in the Clouds",
+            "author": "Agatha Christie",
+            "genre": "General",
+            "path": "static/uploads/books/25_Agatha_Christie_-_Death_In_The_Clouds.epub",
+            "cover_path": "uploads/covers/cover_25.jpg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:25:45"
+        },
+        {
+            "id": 26,
+            "title": "Destination Unknown",
+            "author": "Agatha Christie",
+            "genre": "Mystery",
+            "path": "static/uploads/books/26_Agatha_Christie_-_Destination_Unknown.epub",
+            "cover_path": "uploads/covers/cover_26.jpeg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:26:01"
+        },
+        {
+            "id": 27,
+            "title": "Double Sin and Other Stories",
+            "author": "Agatha Christie",
+            "genre": "Mystery",
+            "path": "static/uploads/books/27_Agatha_Christie_-_Doube_Sin_And_Other_Stories1.epub",
+            "cover_path": "uploads/covers/cover_27.jpeg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:26:14"
+        },
+        {
+            "id": 28,
+            "title": "Project Hail Mary",
+            "author": "Andy Weir",
+            "genre": "Science Fiction",
+            "path": "static/uploads/books/28_ProjectHailMary.epub",
+            "cover_path": "uploads/covers/cover_28.jpeg",
+            "uploader": "Sally",
+            "timestamp": "2026-04-30 13:29:59"
         }
     ]
 }

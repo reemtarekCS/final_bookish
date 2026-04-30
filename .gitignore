@@ -45,6 +45,6 @@ static/uploads/covers/  # If you want to keep uploaded covers out of version con
 *.sqlite
 *.sqlite3
 
-# Your specific data files
-database.json
-comments.json
+# # Your specific data files
+# database.json
+# comments.json

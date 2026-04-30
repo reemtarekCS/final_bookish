@@ -534,23 +534,6 @@ button {
     text-align: center;
 }
 
-.progress-bar {
-    position: fixed;
-    bottom: 56px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #E8DCC8;
-    z-index: 50;
-}
-
-#progress {
-    height: 100%;
-    width: 0%;
-    background: #C8A96E;
-    transition: width 0.1s;
-}
-
 .loading {
     position: absolute;
     top: 50%;
