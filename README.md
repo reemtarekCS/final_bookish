@@ -1,8 +1,8 @@
-# RC_Bookish
+# Bookish
 
 A web app for managing a shared digital book library. Users can upload EPUB files, browse and filter the collection by genre, read books in-browser, and manage their own uploads through a personal profile.
 
-- **What does it do?** RC_Bookish is a Flask-powered shared library web app where users can upload EPUB books, which are automatically catalogued using extracted metadata. The library supports browsing, genre filtering, in-browser reading, and per-user book profiles.
+- **What does it do?** Bookish is a Flask-powered shared library web app where users can upload EPUB books, which are automatically catalogued using extracted metadata. The library supports browsing, genre filtering, in-browser reading, and per-user book profiles.
 - **What is the new feature?** EPUB metadata extraction using the `ebooklib` library — the app automatically reads the title, author, and genre directly from the uploaded file's Dublin Core metadata, and falls back to the Open Library API to fetch a cover image if none is embedded in the file.
 
 ## Prerequisites
